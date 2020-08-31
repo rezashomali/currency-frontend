@@ -1,9 +1,13 @@
 import React, { useState, useEffect, Props } from "react";
-import Header from "./components/Header";
+import useDebounce from "./utils/useDebounce";
 import { Container, Grid, Paper } from "@material-ui/core";
+import Header from "./components/Header";
+
 import InputAmount from "./components/InputAmount";
 import Result from "./components/Result";
 import "./App.scss";
+
+const AMOUNT_DELAY = 1000;
 
 function App() {
   const [amount, setAmount] = useState<number>(0);
@@ -17,11 +21,13 @@ function App() {
     rates[selectedCurrency]
   );
 
+  const debouncedAmount = useDebounce(amount, AMOUNT_DELAY);
+
   useEffect(() => {
-    console.log(amount);
+    console.log(debouncedAmount);
     console.log(rates[selectedCurrency]);
-    setResult(amount * rates[selectedCurrency]);
-  }, [amount, selectedCurrency]);
+    setResult(debouncedAmount * rates[selectedCurrency]);
+  }, [debouncedAmount, selectedCurrency]);
 
   return (
     <div>
