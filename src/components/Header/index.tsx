@@ -1,5 +1,5 @@
 import React from "react";
-import { AppBar, Toolbar, Typography, Grid } from "@material-ui/core";
+import { AppBar, Toolbar, Typography } from "@material-ui/core";
 import "./Header.scss";
 
 const Header = () => {
@@ -10,7 +10,6 @@ const Header = () => {
           <Typography className="header__logo" variant="h2" color="inherit">
             Klarx
           </Typography>
-          <Typography variant="h6"> Currency Converter</Typography>
         </Toolbar>
       </AppBar>
     </div>
