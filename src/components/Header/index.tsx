@@ -5,7 +5,7 @@ import "./Header.scss";
 const Header = () => {
   return (
     <div className="header">
-      <AppBar position="static">
+      <AppBar position="static" className="header__appBar">
         <Toolbar className="">
           <Typography className="header__logo" variant="h2" color="inherit">
             Klarx
