@@ -5,6 +5,7 @@ import {
   Input,
   InputAdornment,
 } from "@material-ui/core";
+import "./InputAmount.scss";
 
 interface Props {
   onAmountChange: any;
@@ -13,14 +14,17 @@ interface Props {
 
 const InputAmount: React.FC<Props> = ({ onAmountChange, symbol }) => {
   return (
-    <FormControl fullWidth>
+    <FormControl fullWidth className="inputAmount">
       <InputLabel htmlFor="standard-adornment-amount">Amount</InputLabel>
       <Input
+        className="inputAmount__input"
         // id="standard-adornment-amount"
         // value={values.amount}
         onChange={onAmountChange}
         startAdornment={
-          <InputAdornment position="start">{symbol}</InputAdornment>
+          <InputAdornment className="inputAmount__symbol" position="start">
+            {symbol}
+          </InputAdornment>
         }
       />
     </FormControl>
