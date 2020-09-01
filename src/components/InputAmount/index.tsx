@@ -2,7 +2,7 @@ import React from "react";
 import {
   FormControl,
   InputLabel,
-  OutlinedInput,
+  Input,
   InputAdornment,
 } from "@material-ui/core";
 
@@ -13,16 +13,28 @@ interface Props {
 
 const InputAmount: React.FC<Props> = ({ onAmountChange, symbol }) => {
   return (
-    <FormControl fullWidth variant="outlined">
-      <InputLabel htmlFor="outlined-adornment-amount">Amount</InputLabel>
-      <OutlinedInput
+    <FormControl fullWidth>
+      <InputLabel htmlFor="standard-adornment-amount">Amount</InputLabel>
+      <Input
+        // id="standard-adornment-amount"
+        // value={values.amount}
         onChange={onAmountChange}
         startAdornment={
           <InputAdornment position="start">{symbol}</InputAdornment>
         }
-        labelWidth={60}
       />
     </FormControl>
+
+    // <FormControl fullWidth>
+    //   <InputLabel htmlFor="outlined-adornment-amount">Amount</InputLabel>
+    //   <OutlinedInput
+    //     onChange={onAmountChange}
+    //     startAdornment={
+    //       <InputAdornment position="start">{symbol}</InputAdornment>
+    //     }
+    //     labelWidth={60}
+    //   />
+    // </FormControl>
   );
 };
 
