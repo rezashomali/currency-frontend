@@ -2,8 +2,19 @@
   margin: 0;
 }
 
+.app__swapBtnWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  div {
+    cursor: pointer;
+  }
+}
+
 .container {
   padding: 15px;
+  color: #36707a;
 }
 
 .currency-selector {
