@@ -8,15 +8,18 @@ import {
 
 interface Props {
   onAmountChange: any;
+  symbol: string;
 }
 
-const InputAmount: React.FC<Props> = ({ onAmountChange }) => {
+const InputAmount: React.FC<Props> = ({ onAmountChange, symbol }) => {
   return (
     <FormControl fullWidth variant="outlined">
       <InputLabel htmlFor="outlined-adornment-amount">Amount</InputLabel>
       <OutlinedInput
         onChange={onAmountChange}
-        startAdornment={<InputAdornment position="start">€</InputAdornment>}
+        startAdornment={
+          <InputAdornment position="start">{symbol}</InputAdornment>
+        }
         labelWidth={60}
       />
     </FormControl>
