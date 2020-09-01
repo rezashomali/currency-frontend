@@ -8,8 +8,9 @@ interface Props {
 const Result: React.FC<Props> = ({ data, symbol }) => {
   return (
     <div className="result">
-      <span>{symbol}</span>
-      <p> {data} </p>
+      <p>
+        <span>{symbol}</span> {data}
+      </p>
     </div>
   );
 };
