@@ -34,7 +34,9 @@ const MoneySelector: React.FC<Props> = ({
           </MenuItem>
         ))}
       </Select>
-      <FormHelperText>Label + placeholder</FormHelperText>
+      <FormHelperText>
+        Select the currency you want to conver {label}
+      </FormHelperText>
     </FormControl>
   );
 };
