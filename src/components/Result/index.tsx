@@ -2,12 +2,13 @@ import React from "react";
 import "./Result.scss";
 interface Props {
   data: number;
+  symbol: string;
 }
 
-const Result: React.FC<Props> = ({ data }) => {
+const Result: React.FC<Props> = ({ data, symbol }) => {
   return (
     <div className="result">
-      <span>$</span>
+      <span>{symbol}</span>
       <p> {data} </p>
     </div>
   );
