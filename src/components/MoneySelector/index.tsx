@@ -24,9 +24,7 @@ const MoneySelector: React.FC<Props> = ({
 }) => {
   return (
     <FormControl fullWidth>
-      <InputLabel shrink id="demo-simple-select-placeholder-label-label">
-        {label}
-      </InputLabel>
+      <InputLabel shrink>{label}</InputLabel>
       <Select value={selectedCurrency} onChange={onChange}>
         {Object.keys(values).map((item) => (
           <MenuItem key={item} value={item}>
