@@ -10,23 +10,20 @@ import MoneySelector from "./components/MoneySelector";
 import "./App.scss";
 import Chart from "./components/Chart";
 
-import { CurrencyData } from "./currency-data/CurrencyData";
-
 const CurrencyLayerClient = require("currencylayer-client");
-// import { CurrencyLayerClient } from "currencylayer-client";
 
 // Const Data
-const AMOUNT_DELAY = 1000;
-const Currencies: { [key: string]: string } = {
+const AMOUNT_DELAY: number = 1000;
+const currencies: { [key: string]: string } = {
   USD: "$ USD - Dollar",
   EUR: "€ EUR - Euro",
   CHF: "ƒ CHF - Swiss Franc",
 };
 
 function App() {
-  // const client = new CurrencyLayerClient({
-  //   apiKey: "7cb2fa306d15983c0edcec597fa8234d",
-  // });
+  const client = new CurrencyLayerClient({
+    apiKey: "7cb2fa306d15983c0edcec597fa8234dd",
+  });
 
   const [selectedCurrencyFrom, setSelectedCurrencyFrom] = useState<string>(
     "EUR"
@@ -35,56 +32,41 @@ function App() {
   const [amount, setAmount] = useState<number>(0);
   const [result, setResult] = useState<number>(0);
   const [rates, setRates] = useState<{ [key: string]: number }>({});
-
-  const [currencyData, setCurrencyData] = useState({
-    success: true,
-    terms: "https://currencylayer.com/terms",
-    privacy: "https://currencylayer.com/privacy",
-    timestamp: 1598891885,
-    source: "USD",
-    quotes: { USDCHF: 0.91, USDEUR: 0.84 },
-  });
+  const [selectCurrenciesTo, setSelectCurrenciesTo] = useState<{
+    [key: string]: string;
+  }>({});
 
   const debouncedAmount = useDebounce(amount, AMOUNT_DELAY);
 
-  const getCurrencySymbole = (item: string) => {
-    return Currencies[item].split(" ")[0];
-  };
+  const getCurrencySymbole = (item: string) => currencies[item].split(" ")[0];
 
   useEffect(() => {
-    // client
-    //   .live({ currencies: "CHF,EUR", source: "USD" })
-    //   .then((data: any) => {
-    //     console.log("fetched new data ", data);
-    //     setCurrencyData(JSON.stringify(data));
-    //   })
-    //   .catch((err: any) => {
-    //     console.log(err.code); // 104
-    //     console.log(err.message); // Your monthly usage limit has been reached...
-    //   });
+    client
+      .live({ currencies: "CHF,EUR", source: "USD" })
+      .then((data: any) => {
+        console.log("fetched new data ", data);
+        // setCurrencyData(JSON.stringify(data));
 
-    setRates({
-      ...currencyData.quotes,
-      EURUSD: Number((1 / currencyData.quotes.USDEUR).toFixed(3)),
-      CHFUSD: Number((1 / currencyData.quotes.USDCHF).toFixed(3)),
-      EURCHF: Number(
-        ((1 / currencyData.quotes.USDEUR) * currencyData.quotes.USDCHF).toFixed(
-          3
-        )
-      ),
-      CHFEUR: Number(
-        ((1 / currencyData.quotes.USDCHF) * currencyData.quotes.USDEUR).toFixed(
-          3
-        )
-      ),
-    });
-    // console.log(CurrencyData);
-    // setRates(CurrencyData);
+        const generateRates = {
+          ...data.quotes,
+          EURUSD: Number((1 / data.quotes.USDEUR).toFixed(3)),
+          CHFUSD: Number((1 / data.quotes.USDCHF).toFixed(3)),
+          EURCHF: Number(
+            ((1 / data.quotes.USDEUR) * data.quotes.USDCHF).toFixed(3)
+          ),
+          CHFEUR: Number(
+            ((1 / data.quotes.USDCHF) * data.quotes.USDEUR).toFixed(3)
+          ),
+        };
+        setRates(generateRates);
+      })
+      .catch((err: any) => {
+        console.log(err.code); // 104
+        console.log(err.message); // Your monthly usage limit has been reached...
+      });
   }, []);
 
   useEffect(() => {
-    console.log(rates);
-
     setResult(
       rates[`${selectedCurrencyFrom}${selectedCurrencyTo}`]
         ? Number(
@@ -93,9 +75,8 @@ function App() {
               debouncedAmount
             ).toFixed(2)
           )
-        : 0
+        : debouncedAmount
     );
-    console.log(selectedCurrencyFrom, selectedCurrencyTo);
   }, [debouncedAmount, selectedCurrencyFrom, selectedCurrencyTo]);
 
   const swapCurrecies = () => {
@@ -116,11 +97,9 @@ function App() {
           <Grid item sm={5} xs={12}>
             <MoneySelector
               label="From"
-              values={Currencies}
+              values={currencies}
               selectedCurrency={selectedCurrencyFrom}
-              onSelectChange={(
-                event: React.ChangeEvent<{ value: unknown }>
-              ) => {
+              onChange={(event) => {
                 setSelectedCurrencyFrom(event.target.value as string);
               }}
             />
@@ -133,11 +112,9 @@ function App() {
           <Grid item sm={5} xs={12}>
             <MoneySelector
               label="To"
-              values={Currencies}
+              values={currencies}
               selectedCurrency={selectedCurrencyTo}
-              onSelectChange={(
-                event: React.ChangeEvent<{ value: unknown }>
-              ) => {
+              onChange={(event) => {
                 setSelectedCurrencyTo(event.target.value as string);
               }}
             />
@@ -145,13 +122,13 @@ function App() {
           <Grid item sm={5} xs={12}>
             <InputAmount
               symbol={getCurrencySymbole(selectedCurrencyFrom)}
-              onAmountChange={(e: any) => {
+              onChange={(e: any) => {
                 setAmount(e.target.value);
               }}
             />
           </Grid>
-          <Grid item sm={2} implementation="css" smDown component={Hidden} />
-          <Grid item sm={5} xs={12}>
+          <Grid item sm={2} implementation="css" xsDown component={Hidden} />
+          <Grid item sm={5} xs={12} style={{ display: "flex" }}>
             <Result
               symbol={getCurrencySymbole(selectedCurrencyTo)}
               data={result}
@@ -159,7 +136,10 @@ function App() {
           </Grid>
 
           <Grid item xs={12}>
-            <Chart />
+            <Chart
+              selectedCurrencyFrom={selectedCurrencyFrom}
+              selectedCurrencyTo={selectedCurrencyTo}
+            />
           </Grid>
         </Grid>
       </Container>
