@@ -5,29 +5,29 @@ import {
   Select,
   MenuItem,
   FormHelperText,
+  SelectProps,
 } from "@material-ui/core";
 
-interface Props {
+type Props = SelectProps & {
   label: string;
-  onSelectChange: any;
   values: {
     [key: string]: string;
   };
   selectedCurrency: string;
-}
+};
 
 const MoneySelector: React.FC<Props> = ({
   label,
   values,
   selectedCurrency,
-  onSelectChange,
+  onChange,
 }) => {
   return (
     <FormControl fullWidth>
       <InputLabel shrink id="demo-simple-select-placeholder-label-label">
         {label}
       </InputLabel>
-      <Select value={selectedCurrency} onChange={onSelectChange}>
+      <Select value={selectedCurrency} onChange={onChange}>
         {Object.keys(values).map((item) => (
           <MenuItem key={item} value={item}>
             {values[item]}
