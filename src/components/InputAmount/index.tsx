@@ -4,15 +4,15 @@ import {
   InputLabel,
   Input,
   InputAdornment,
+  InputProps,
 } from "@material-ui/core";
 import "./InputAmount.scss";
 
-interface Props {
-  onAmountChange: any;
+type Props = InputProps & {
   symbol: string;
-}
+};
 
-const InputAmount: React.FC<Props> = ({ onAmountChange, symbol }) => {
+const InputAmount: React.FC<Props> = ({ onChange, symbol }) => {
   return (
     <FormControl fullWidth className="inputAmount">
       <InputLabel htmlFor="standard-adornment-amount">Amount</InputLabel>
@@ -20,7 +20,7 @@ const InputAmount: React.FC<Props> = ({ onAmountChange, symbol }) => {
         className="inputAmount__input"
         // id="standard-adornment-amount"
         // value={values.amount}
-        onChange={onAmountChange}
+        onChange={onChange}
         startAdornment={
           <InputAdornment className="inputAmount__symbol" position="start">
             {symbol}
@@ -28,17 +28,6 @@ const InputAmount: React.FC<Props> = ({ onAmountChange, symbol }) => {
         }
       />
     </FormControl>
-
-    // <FormControl fullWidth>
-    //   <InputLabel htmlFor="outlined-adornment-amount">Amount</InputLabel>
-    //   <OutlinedInput
-    //     onChange={onAmountChange}
-    //     startAdornment={
-    //       <InputAdornment position="start">{symbol}</InputAdornment>
-    //     }
-    //     labelWidth={60}
-    //   />
-    // </FormControl>
   );
 };
 
