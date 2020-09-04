@@ -1,45 +1,48 @@
 import React, { useState, useEffect } from "react";
-import { ResponsiveLine } from "@nivo/line";
+import { ResponsiveLine, Serie } from "@nivo/line";
 import moment from "moment";
 import Alert from "@material-ui/lab/Alert";
-import { CurrencyLayerApiKey } from "../../config";
-const CurrencyLayerClient = require("currencylayer-client");
+import getHistoricalRate from "../../services/currenylayer/getHistoricalRate";
 
-const client = new CurrencyLayerClient({
-  apiKey: CurrencyLayerApiKey,
-});
+type RatesType = { [key: string]: number };
+
+type HistoricalConvertionRateType = Array<{
+  date: string;
+  rates: RatesType;
+}>;
 
 type Props = {
   selectedCurrencyFrom: string;
   selectedCurrencyTo: string;
 };
 
+const datesArray = Array(14)
+  .fill("")
+  .map((_, i) => moment().subtract(i, "d").format("YYYY-MM-DD"))
+  .reverse();
+
 const Chart: React.FC<Props> = ({
   selectedCurrencyFrom,
   selectedCurrencyTo,
 }) => {
-  const [twoWeeksArray, setTwoWeeksArray] = useState<string[]>(
-    // generate days for use in data of chart
-    Array(14)
-      .fill("")
-      .map((_, i) => moment().subtract(i, "d").format("YYYY-MM-DD"))
-      .reverse()
-  );
   const [
     historicalConvertionRateArray,
     setHistoricalConvertionRateArray,
-  ] = useState([]);
-  const [chartData, setChartData] = useState<
-    Array<{
-      id: string;
-      color: string;
-      data: any[];
-    }>
-  >();
+  ] = useState<HistoricalConvertionRateType>([]);
+  const [chartData, setChartData] = useState<Array<Serie>>([]);
 
   useEffect(() => {
     // run only once and generate all currency rates
-    generateDailyConvertionRate(twoWeeksArray);
+    Promise.all(
+      datesArray.map((date) =>
+        getHistoricalRate(date).then((data) => ({
+          date,
+          rates: data,
+        }))
+      )
+    ).then((hitoricalData) => {
+      setHistoricalConvertionRateArray(hitoricalData);
+    });
   }, []);
 
   useEffect(() => {
@@ -51,72 +54,25 @@ const Chart: React.FC<Props> = ({
         historicalConvertionRateArray
       );
   }, [
-    JSON.stringify(historicalConvertionRateArray),
     historicalConvertionRateArray.length,
     selectedCurrencyFrom,
     selectedCurrencyTo,
   ]);
 
-  // run the api for a date, get and calculate all rates
-  // recieve a date and return all rates
-  const getHistoryRate = (date: string) => {
-    return client
-      .historical({ date, currencies: "CHF,EUR", source: "USD" })
-      .then((data: any) => {
-        return {
-          ...data.quotes,
-          EURUSD: Number((1 / data.quotes.USDEUR).toFixed(3)),
-          CHFUSD: Number((1 / data.quotes.USDCHF).toFixed(3)),
-          EURCHF: Number(
-            ((1 / data.quotes.USDEUR) * data.quotes.USDCHF).toFixed(3)
-          ),
-          CHFEUR: Number(
-            ((1 / data.quotes.USDCHF) * data.quotes.USDEUR).toFixed(3)
-          ),
-        };
-      })
-      .catch((err: any) => {
-        console.log(err);
-      });
-  };
-
-  // generate all of currency rates for all days
-  const generateDailyConvertionRate = async (array: string[]) => {
-    const historicalConvertionRateDate: any = [];
-
-    await array.map(async (item: any) => {
-      let rates: any;
-      await getHistoryRate(item).then((data: any) => {
-        rates = data;
-
-        historicalConvertionRateDate.push({
-          date: item,
-          rates: { ...rates },
-        });
-      });
-    });
-    setHistoricalConvertionRateArray(historicalConvertionRateDate);
-  };
-
   // generate data for chart base of selected currencies
   const generateChartData = (
     selectedCurrencyFrom: string,
     selectedCurrencyTo: string,
-    historicalRateArray: object[]
+    historicalRateArray: HistoricalConvertionRateType
   ) => {
-    let data: Array<{ x: string; y: number }> = [];
-    historicalRateArray.map((item: any) => {
-      data.push({
-        x: item.date.split("-").slice(1).join("-"),
-        y: item.rates[selectedCurrencyFrom + selectedCurrencyTo],
-      });
-    });
-
     setChartData([
       {
         id: `${selectedCurrencyFrom} to ${selectedCurrencyTo}`,
         color: "hsl(11, 70%, 50%)",
-        data: [...data],
+        data: historicalRateArray.map((item) => ({
+          x: moment(item.date).format("MM-DD"),
+          y: item.rates[`${selectedCurrencyFrom}${selectedCurrencyTo}`],
+        })),
       },
     ]);
   };
