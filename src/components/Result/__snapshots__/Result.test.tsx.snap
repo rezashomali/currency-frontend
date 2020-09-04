@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Result snapshot  1`] = `
+<div
+  className="result"
+>
+  <p>
+    <span>
+      $
+    </span>
+     
+    0
+  </p>
+</div>
+`;

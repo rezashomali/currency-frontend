@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Header snapshot  1`] = `
+<div
+  className="header"
+>
+  <header
+    className="MuiPaper-root MuiAppBar-root MuiAppBar-positionStatic MuiAppBar-colorPrimary header__appBar MuiPaper-elevation4"
+  >
+    <div
+      className="MuiToolbar-root MuiToolbar-regular MuiToolbar-gutters"
+    >
+      <h2
+        className="MuiTypography-root header__logo MuiTypography-h2 MuiTypography-colorInherit"
+      >
+        Klarx
+      </h2>
+    </div>
+  </header>
+</div>
+`;

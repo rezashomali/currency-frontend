@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`InputAmount snapshot  1`] = `
+<div
+  className="MuiFormControl-root inputAmount MuiFormControl-fullWidth"
+>
+  <label
+    className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiFormLabel-filled"
+    data-shrink={true}
+    htmlFor="standard-adornment-amount"
+  >
+    Amount
+  </label>
+  <div
+    className="MuiInputBase-root MuiInput-root MuiInput-underline inputAmount__input MuiInputBase-formControl MuiInput-formControl MuiInputBase-adornedStart"
+    onClick={[Function]}
+  >
+    <div
+      className="MuiInputAdornment-root inputAmount__symbol MuiInputAdornment-positionStart"
+    >
+      <p
+        className="MuiTypography-root MuiTypography-body1 MuiTypography-colorTextSecondary"
+      >
+        $
+      </p>
+    </div>
+    <input
+      aria-invalid={false}
+      className="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedStart"
+      disabled={false}
+      onAnimationStart={[Function]}
+      onBlur={[Function]}
+      onChange={[Function]}
+      onFocus={[Function]}
+      required={false}
+      type="number"
+      value={0}
+    />
+  </div>
+  
+</div>
+`;
