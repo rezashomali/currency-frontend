@@ -1,20 +1,18 @@
 import React, { useState, useEffect } from "react";
 import useDebounce from "./utils/useDebounce";
-import { CurrencyLayerApiKey } from "./config";
 import { Container, Grid, Hidden } from "@material-ui/core";
 import SwapHorizontalCircleIcon from "@material-ui/icons/SwapHorizontalCircle";
 import Header from "./components/Header";
 
+import getLiveData from "./services/currenylayer/getLiveData";
+import MoneySelector from "./components/MoneySelector";
 import InputAmount from "./components/InputAmount";
 import Result from "./components/Result";
-import MoneySelector from "./components/MoneySelector";
-import "./App.scss";
 import Chart from "./components/Chart";
-
-const CurrencyLayerClient = require("currencylayer-client");
+import "./App.scss";
 
 // Const Data
-const AMOUNT_DELAY: number = 1000; // for use in useDebounce
+const AMOUNT_DELAY = 1000; // for use in useDebounce
 const currencies: { [key: string]: string } = {
   // currencies that used in project
   USD: "$ USD - Dollar",
@@ -23,14 +21,12 @@ const currencies: { [key: string]: string } = {
 };
 
 function App() {
-  const client = new CurrencyLayerClient({
-    apiKey: CurrencyLayerApiKey,
-  });
-
   const [selectedCurrencyFrom, setSelectedCurrencyFrom] = useState<string>(
-    "EUR"
+    localStorage.getItem("prevCurrencyFrom") || "EUR"
   );
-  const [selectedCurrencyTo, setSelectedCurrencyTo] = useState<string>("USD");
+  const [selectedCurrencyTo, setSelectedCurrencyTo] = useState<string>(
+    localStorage.getItem("prevCurrencyTo") || "USD"
+  );
   const [amount, setAmount] = useState<number>(0);
   const [result, setResult] = useState<number>(0);
   const [rates, setRates] = useState<{ [key: string]: number }>({});
@@ -41,30 +37,14 @@ function App() {
 
   useEffect(() => {
     // run only once and get and calculate all of the rates
-    client
-      .live({ currencies: "CHF,EUR", source: "USD" })
-      .then((data: any) => {
-        // because the free plan of api only return with source of USD
-        // i have implemented calculations to generate other currency rates
-        const generateRates = {
-          ...data.quotes,
-          EURUSD: Number((1 / data.quotes.USDEUR).toFixed(3)),
-          CHFUSD: Number((1 / data.quotes.USDCHF).toFixed(3)),
-          EURCHF: Number(
-            ((1 / data.quotes.USDEUR) * data.quotes.USDCHF).toFixed(3)
-          ),
-          CHFEUR: Number(
-            ((1 / data.quotes.USDCHF) * data.quotes.USDEUR).toFixed(3)
-          ),
-        };
-        setRates(generateRates);
-      })
-      .catch((err: any) => {
-        console.log(err);
-      });
+    getLiveData().then((liveRates) => {
+      setRates(liveRates);
+    });
   }, []);
 
   useEffect(() => {
+    localStorage.setItem("prevCurrencyFrom", selectedCurrencyFrom);
+    localStorage.setItem("prevCurrencyTo", selectedCurrencyTo);
     // run everytime each currency select or amount of the input change
     // generate the result of the convertion base of the currencies selected
     if (selectedCurrencyFrom === selectedCurrencyTo) {
