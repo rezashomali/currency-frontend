@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import useDebounce from "./utils/useDebounce";
+import { CurrencyLayerApiKey } from "./config";
 import { Container, Grid, Hidden } from "@material-ui/core";
 import SwapHorizontalCircleIcon from "@material-ui/icons/SwapHorizontalCircle";
 import Header from "./components/Header";
@@ -22,7 +23,7 @@ const currencies: { [key: string]: string } = {
 
 function App() {
   const client = new CurrencyLayerClient({
-    apiKey: "7cb2fa306d15983c0edcec597fa8234dd",
+    apiKey: CurrencyLayerApiKey,
   });
 
   const [selectedCurrencyFrom, setSelectedCurrencyFrom] = useState<string>(
@@ -32,9 +33,6 @@ function App() {
   const [amount, setAmount] = useState<number>(0);
   const [result, setResult] = useState<number>(0);
   const [rates, setRates] = useState<{ [key: string]: number }>({});
-  const [selectCurrenciesTo, setSelectCurrenciesTo] = useState<{
-    [key: string]: string;
-  }>({});
 
   const debouncedAmount = useDebounce(amount, AMOUNT_DELAY);
 
@@ -44,9 +42,6 @@ function App() {
     client
       .live({ currencies: "CHF,EUR", source: "USD" })
       .then((data: any) => {
-        console.log("fetched new data ", data);
-        // setCurrencyData(JSON.stringify(data));
-
         const generateRates = {
           ...data.quotes,
           EURUSD: Number((1 / data.quotes.USDEUR).toFixed(3)),
@@ -61,22 +56,25 @@ function App() {
         setRates(generateRates);
       })
       .catch((err: any) => {
-        console.log(err.code); // 104
-        console.log(err.message); // Your monthly usage limit has been reached...
+        console.log(err);
       });
   }, []);
 
   useEffect(() => {
-    setResult(
-      rates[`${selectedCurrencyFrom}${selectedCurrencyTo}`]
-        ? Number(
-            (
-              rates[`${selectedCurrencyFrom}${selectedCurrencyTo}`] *
-              debouncedAmount
-            ).toFixed(2)
-          )
-        : debouncedAmount
-    );
+    if (selectedCurrencyFrom === selectedCurrencyTo) {
+      setResult(debouncedAmount);
+    } else {
+      setResult(
+        rates[`${selectedCurrencyFrom}${selectedCurrencyTo}`] && amount > 0
+          ? Number(
+              (
+                rates[`${selectedCurrencyFrom}${selectedCurrencyTo}`] *
+                debouncedAmount
+              ).toFixed(2)
+            )
+          : 0
+      );
+    }
   }, [debouncedAmount, selectedCurrencyFrom, selectedCurrencyTo]);
 
   const swapCurrecies = () => {
@@ -121,6 +119,7 @@ function App() {
           </Grid>
           <Grid item sm={5} xs={12}>
             <InputAmount
+              amount={amount}
               symbol={getCurrencySymbole(selectedCurrencyFrom)}
               onChange={(e: any) => {
                 setAmount(e.target.value);
