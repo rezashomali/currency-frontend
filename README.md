@@ -1,5 +1,9 @@
 # currency-frontend
 
+I used currencylayer and because i was using free plan it doesn't allow me to change source of the currency so I implement a calculation for generating other currency rates.
+
+for changing the API KEY use congif.tsx in src folder.
+
 ## the challenge
 
 We are a company based in Munich, Germany and are expanding internationally to the US and Switzerland. We need to price our products in CHF and USD. Our pricing team needs a dashboard that show the current value of a EUR amount in CHF and USD. Also we would like to have an overview of the last two weeks conversion rates in a graphical chart.
