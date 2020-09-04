@@ -5,4 +5,11 @@
   .inputAmount__symbol p {
     font-size: 25px;
   }
+
+  .inputAmount__error {
+    color: #e43131;
+    font-size: 13px;
+    position: absolute;
+    bottom: -20px;
+  }
 }
