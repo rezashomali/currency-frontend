@@ -20,7 +20,7 @@ const Chart: React.FC<Props> = ({
 }) => {
   const [twoWeeksArray, setTwoWeeksArray] = useState<string[]>(
     // generate days for use in data of chart
-    Array(2)
+    Array(14)
       .fill("")
       .map((_, i) => moment().subtract(i, "d").format("YYYY-MM-DD"))
   );
