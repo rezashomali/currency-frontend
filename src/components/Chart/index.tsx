@@ -23,6 +23,7 @@ const Chart: React.FC<Props> = ({
     Array(14)
       .fill("")
       .map((_, i) => moment().subtract(i, "d").format("YYYY-MM-DD"))
+      .reverse()
   );
   const [
     historicalConvertionRateArray,
@@ -104,10 +105,9 @@ const Chart: React.FC<Props> = ({
     historicalRateArray: object[]
   ) => {
     let data: Array<{ x: string; y: number }> = [];
-    console.log(data);
     historicalRateArray.map((item: any) => {
       data.push({
-        x: item.date,
+        x: item.date.split("-").slice(1).join("-"),
         y: item.rates[selectedCurrencyFrom + selectedCurrencyTo],
       });
     });
