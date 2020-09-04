@@ -2,7 +2,7 @@
 
 I used currencylayer and because i was using free plan it doesn't allow me to change source of the currency so I implement a calculation for generating other currency rates.
 
-for changing the API KEY use congif.tsx in src folder.
+for changing the API KEY of currencylayer use config.tsx in src folder.
 
 ## the challenge
 
