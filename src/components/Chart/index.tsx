@@ -19,6 +19,7 @@ const Chart: React.FC<Props> = ({
   selectedCurrencyTo,
 }) => {
   const [twoWeeksArray, setTwoWeeksArray] = useState<string[]>(
+    // generate days for use in data of chart
     Array(2)
       .fill("")
       .map((_, i) => moment().subtract(i, "d").format("YYYY-MM-DD"))
@@ -36,10 +37,12 @@ const Chart: React.FC<Props> = ({
   >();
 
   useEffect(() => {
+    // run only once and generate all currency rates
     generateDailyConvertionRate(twoWeeksArray);
   }, []);
 
   useEffect(() => {
+    // run everytime selected currencies change and generate new data for chart
     if (historicalConvertionRateArray.length)
       generateChartData(
         selectedCurrencyFrom,
@@ -53,6 +56,8 @@ const Chart: React.FC<Props> = ({
     selectedCurrencyTo,
   ]);
 
+  // run the api for a date, get and calculate all rates
+  // recieve a date and return all rates
   const getHistoryRate = (date: string) => {
     return client
       .historical({ date, currencies: "CHF,EUR", source: "USD" })
@@ -74,6 +79,7 @@ const Chart: React.FC<Props> = ({
       });
   };
 
+  // generate all of currency rates for all days
   const generateDailyConvertionRate = async (array: string[]) => {
     const historicalConvertionRateDate: any = [];
 
@@ -91,6 +97,7 @@ const Chart: React.FC<Props> = ({
     setHistoricalConvertionRateArray(historicalConvertionRateDate);
   };
 
+  // generate data for chart base of selected currencies
   const generateChartData = (
     selectedCurrencyFrom: string,
     selectedCurrencyTo: string,

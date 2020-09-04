@@ -14,8 +14,9 @@ import Chart from "./components/Chart";
 const CurrencyLayerClient = require("currencylayer-client");
 
 // Const Data
-const AMOUNT_DELAY: number = 1000;
+const AMOUNT_DELAY: number = 1000; // for use in useDebounce
 const currencies: { [key: string]: string } = {
+  // currencies that used in project
   USD: "$ USD - Dollar",
   EUR: "€ EUR - Euro",
   CHF: "ƒ CHF - Swiss Franc",
@@ -36,12 +37,15 @@ function App() {
 
   const debouncedAmount = useDebounce(amount, AMOUNT_DELAY);
 
-  const getCurrencySymbole = (item: string) => currencies[item].split(" ")[0];
+  const getCurrencySymbole = (item: string) => currencies[item].split(" ")[0]; // generate symbole for currencies
 
   useEffect(() => {
+    // run only once and get and calculate all of the rates
     client
       .live({ currencies: "CHF,EUR", source: "USD" })
       .then((data: any) => {
+        // because the free plan of api only return with source of USD
+        // i have implemented calculations to generate other currency rates
         const generateRates = {
           ...data.quotes,
           EURUSD: Number((1 / data.quotes.USDEUR).toFixed(3)),
@@ -61,6 +65,8 @@ function App() {
   }, []);
 
   useEffect(() => {
+    // run everytime each currency select or amount of the input change
+    // generate the result of the convertion base of the currencies selected
     if (selectedCurrencyFrom === selectedCurrencyTo) {
       setResult(debouncedAmount);
     } else {
@@ -78,6 +84,7 @@ function App() {
   }, [debouncedAmount, selectedCurrencyFrom, selectedCurrencyTo]);
 
   const swapCurrecies = () => {
+    // swap selected currencies
     let temp = selectedCurrencyFrom;
     setSelectedCurrencyFrom(selectedCurrencyTo);
     setSelectedCurrencyTo(temp);
