@@ -1,1 +1,1 @@
-export const CurrencyLayerApiKey = "7cb2fa306d15983c0edcec597fa8234d";
+export const CurrencyLayerApiKey = "35253f5427cbd32c30507911ac9d819f";
