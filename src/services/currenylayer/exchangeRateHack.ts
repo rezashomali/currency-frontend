@@ -1,3 +1,5 @@
+// because free plan only return rate from USD
+// I create a Hack that calculate other exchange rate
 const exchangeRateHack = (rate: { [key: string]: number }) => {
   return {
     EURUSD: Number((1 / rate.USDEUR).toFixed(3)),
